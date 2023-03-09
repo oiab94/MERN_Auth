@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
+const bcrypt = require("bcrypt");
 
 // * Creamos el esquema para nuestro modelo
 const userSchema = new mongoose.Schema({
@@ -16,6 +17,14 @@ const userSchema = new mongoose.Schema({
 		minlength: [6, "Minimun characters are 6"	]
 	},
 });
+
+// * Encriptar el password antes de guardar
+userSchema.pre("save", async function(next){
+	const salt = await bcrypt.genSalt();
+	this.password = await bcrypt.hash(this.password, salt);
+
+	next();
+})
 
 // * Creamos el modelo
 const User = mongoose.model("user", userSchema);
