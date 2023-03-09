@@ -30,7 +30,6 @@ const handleErrors = ({errors, message, code}) => {
 		})
 	}
 
-	console.log(message);
 	// Incorrect Email
 	if (message === "Incorrect Email")
 		error.email = "Email is incorrect";

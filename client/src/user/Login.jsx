@@ -1,33 +1,62 @@
 import { Button, Form } from "react-bootstrap";
+import axios from "axios";
+import { API_URL } from "../env";
+import { useState } from "react";
 
 const Login = () => {
+	const [ email, setEmail ] = useState("")
+	const [ password, setPassword ] = useState("");
+	const [ isEmailValid, setIsEmailValid] = useState("");
+	const [ isPasswordValid, setIsPasswordValid ] = useState("");
+
 	// ! Handle Submit
 	const handleSubmit = (e) => {
-		const {email, password} = e.target.elements;
-		
 		e.preventDefault();
-		console.log(email, password);
+		// Refrescamos los formularios
+		setIsEmailValid("");
+		setIsPasswordValid("");
+
+		axios.post(
+			API_URL + "/login", 
+			{email, password}, {withCredentials: true})
+			.then(result => console.log(result))
+			.catch(({response}) => {
+				setIsEmailValid(response.data["email"]);
+				setIsPasswordValid(response.data["password"]);
+			})
 	}
 
 	return (
 		<>
 			<h1>Login</h1>
-			<Form onSubmit={handleSubmit}>
+			<Form onSubmit={handleSubmit} >
 				<Form.Group className="mb-3" controlId="email">
 					<Form.Label>Email</Form.Label>
 					<Form.Control
 						type="text"
-						placeholder="Enter Email" />
+						placeholder="Enter Email"
+						onChange={e => setEmail(e.target.value)} />
+					{
+						isEmailValid !== "" ? 
+							<Form.Text color="red">{ isEmailValid }</Form.Text> :
+							null
+					}
 				</Form.Group>
 
 				<Form.Group className="mb-3" controlId="password">
 					<Form.Label>Password</Form.Label>
 					<Form.Control
 						type="password"
-						placeholder="Password" />
+						placeholder="Password"
+						onChange={e => setPassword(e.target.value)} />
+					{
+						isPasswordValid !== "" ? 
+							<Form.Text color="red">{ isPasswordValid }</Form.Text> :
+							null
+					}
 				</Form.Group>
 
-				<Button type="submit" >Login</Button>
+				<Button type="submit" >Signup</Button>
 			</Form>
 		</>
 	);
