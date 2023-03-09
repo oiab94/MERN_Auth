@@ -59,5 +59,9 @@ module.exports.signup_post = (req, res) => {
 }
 
 module.exports.login_post = (req, res) => {
-	res.send("user login")
+	const { email, password } = req.body;
+
+	User.login(email, password)
+		.then(user => res.status(201).json(user))
+		.catch(err => res.status(400).json(err))
 }

@@ -26,6 +26,22 @@ userSchema.pre("save", async function(next){
 	next();
 })
 
+// * Método estático para que acceder por login
+userSchema.statics.login = async function(email, password) {
+	const user = await this.findOne({ email });
+
+	// Verificamos si existe el usuario
+	if(user){
+		const auth = await bcrypt.compare(password, user.password)
+		
+		if(auth)
+			return user;
+		
+		throw Error("Incorrect Password");
+	}
+	throw Error("Incorrect Email");
+}
+
 // * Creamos el modelo
 const User = mongoose.model("user", userSchema);
 
