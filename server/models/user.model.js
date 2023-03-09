@@ -21,3 +21,17 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("user", userSchema);
 
 module.exports = User;
+
+// // * Disparar una función antes de guardar en la DB
+// userSchema.pre("save", function(next) {
+// 	console.log("Usuario antes de crear: ", this);
+	
+// 	next();
+// })
+
+// // * Disparar una función después de guardar en la DB
+// userSchema.post("save", function(doc, next){
+// 	console.log("Nuevo usuario: ", doc);
+
+// 	next();	// Permite que se pueda avanzar a las siguientes operaciones
+// })
