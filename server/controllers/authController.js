@@ -30,6 +30,15 @@ const handleErrors = ({errors, message, code}) => {
 		})
 	}
 
+	console.log(message);
+	// Incorrect Email
+	if (message === "Incorrect Email")
+		error.email = "Email is incorrect";
+
+	// Incorrect Password
+	if(message === "Incorrect Password")
+		error.password = "Password is incorrect";
+
 	return error;
 }
 
@@ -62,6 +71,14 @@ module.exports.login_post = (req, res) => {
 	const { email, password } = req.body;
 
 	User.login(email, password)
-		.then(user => res.status(201).json(user))
-		.catch(err => res.status(400).json(err))
+		.then(user => {
+			const token = createToken(user._id);
+
+			res.cookie("Login", token, { httpOnly: true, maxAge: maxAge * 1000 })
+			res.status(201).json(user)
+		})
+		.catch(err => {
+			const errors = handleErrors(err);
+			res.status(400).json(errors);
+		})
 }
