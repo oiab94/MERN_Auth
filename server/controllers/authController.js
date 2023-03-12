@@ -71,10 +71,10 @@ module.exports.login_post = (req, res) => {
 
 	User.login(email, password)
 		.then(user => {
-			const token = createToken(user._id);
+			const token = createToken(user._id); // Creamos un token utilizando solo el id del usuario
 
-			res.cookie("Login", token, { httpOnly: true, maxAge: maxAge * 1000 })
-			res.status(201).json(user)
+			res.cookie("login", token, { httpOnly: true, maxAge: maxAge * 1000 })
+			res.status(200).json({user: user._id}) //Enviamos solamente el id del usuario
 		})
 		.catch(err => {
 			const errors = handleErrors(err);
