@@ -81,3 +81,8 @@ module.exports.login_post = (req, res) => {
 			res.status(400).json(errors);
 		})
 }
+
+module.exports.logout_get = (req, res) => {
+	res.cookie("login", "", {maxAge: 1});
+	res.status(200).json({ message:"User logout" });
+}
