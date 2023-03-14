@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { API_URL } from "./env";
+import { Navigate } from "react-router-dom"
 
 const NoVisit = () => {
+	// ! Realizar el guardado y verificacion de token al hacer login
+	// ! En cada peticion que hagamos podemos recuperar los datos desde localStorage
+	// ! Cada vez que realizamos alguna peticion verificar el id del usuario para saber si esta autenticado
 
-	useEffect(
-		()=> {
-			axios.get(API_URL + "/authPage", {withCredentials: true})
-				.then(user => console.log(user))
-				.catch(({response}) => console.log(response));
-		}, []);
+	const renderLogin = () => {
+		return <Navigate to="/" />;
+	}
+
+	const renderPage = () => {
+		return <h2>Mostrar documento</h2>;
+	}
 
 	return (
 		<>
-			<h2>Contenido Oculto</h2>
+			{
+				window.localStorage.getItem("user") !== null
+					? renderPage()
+					: renderLogin()
+			}
 		</>
 	);
 
