@@ -2,12 +2,14 @@ import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { API_URL } from "../env";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 	const [ email, setEmail ] = useState("")
 	const [ password, setPassword ] = useState("");
 	const [ isEmailValid, setIsEmailValid] = useState("");
 	const [ isPasswordValid, setIsPasswordValid ] = useState("");
+	const navigate = useNavigate();
 
 	// ! Handle Submit
 	const handleSubmit = (e) => {
@@ -19,7 +21,13 @@ const Login = () => {
 		axios.post(
 			API_URL + "/login", 
 			{email, password}, {withCredentials: true})
-			.then(result => console.log(result))
+			.then(result => 
+				axios.get(API_URL + "/authUser", {withCredentials: true})
+					.then((user) => {
+				console.log(user.data);
+				window.localStorage.setItem("user", JSON.stringify(user.data));
+				navigate("noVisit");
+			}))
 			.catch(({response}) => {
 				setIsEmailValid(response.data["email"]);
 				setIsPasswordValid(response.data["password"]);
@@ -37,9 +45,9 @@ const Login = () => {
 						placeholder="Enter Email"
 						onChange={e => setEmail(e.target.value)} />
 					{
-						isEmailValid !== "" ? 
-							<Form.Text color="red">{ isEmailValid }</Form.Text> :
-							null
+						isEmailValid !== "" 
+							? <Form.Text color="red">{ isEmailValid }</Form.Text> 
+							: null
 					}
 				</Form.Group>
 
@@ -50,9 +58,9 @@ const Login = () => {
 						placeholder="Password"
 						onChange={e => setPassword(e.target.value)} />
 					{
-						isPasswordValid !== "" ? 
-							<Form.Text color="red">{ isPasswordValid }</Form.Text> :
-							null
+						isPasswordValid !== "" 
+							? <Form.Text color="red">{ isPasswordValid }</Form.Text> 
+							: null
 					}
 				</Form.Group>
 
